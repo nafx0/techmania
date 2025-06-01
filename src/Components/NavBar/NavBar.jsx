@@ -19,6 +19,8 @@ import {
   SheetHeader,
 } from "@/components/ui/sheet";
 import { LogIn, Menu } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "../Provider/AuthProvider";
 
 export default function NavBar() {
   const mainLinks = [
@@ -27,6 +29,8 @@ export default function NavBar() {
     { title: "Dashboard", href: "/dashboard" },
   ];
 
+  const authInfo = useContext(AuthContext)
+
   return (
     <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 max-w-7xl mx-auto px-5 md:px-0">
       <div className="container flex h-16 items-center justify-between">
@@ -34,7 +38,7 @@ export default function NavBar() {
         <div className="flex items-center gap-2">
           <NavLink to="/" className="flex items-center space-x-2">
             <span className="font-bold text-xl">
-              Gadget <span className="text-[#8b5cf6]">Heaven</span>
+              {authInfo.name} <span className="text-[#8b5cf6]">Heaven</span>
             </span>
           </NavLink>
         </div>

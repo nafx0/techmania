@@ -1,14 +1,15 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Root from './Components/Root/Root';
-import { LoginForm } from './Components/LoginForm/LoginForm';
-import ErrorPage from './Components/ErrorPage/ErrorPage';
-import Home from './Home/Home';
-import SignUp from './Components/SignUp/SignUp';
-import { ToastContainer } from 'react-toastify';
+import Root from "./Components/Root/Root";
+import { LoginForm } from "./Components/LoginForm/LoginForm";
+import ErrorPage from "./Components/ErrorPage/ErrorPage";
+import Home from "./Home/Home";
+import SignUp from "./Components/SignUp/SignUp";
+import { ToastContainer } from "react-toastify";
+import AuthProvider from "./Components/Provider/AuthProvider";
 
 const router = createBrowserRouter([
   {
@@ -18,23 +19,25 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home></Home>
+        element: <Home></Home>,
       },
       {
         path: "/login",
-        element: <LoginForm></LoginForm>
+        element: <LoginForm></LoginForm>,
       },
       {
         path: "/register",
-        element: <SignUp></SignUp>
-      }
-    ]
+        element: <SignUp></SignUp>,
+      },
+    ],
   },
 ]);
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
-    <ToastContainer ></ToastContainer>
-  </StrictMode>,
-)
+    <AuthProvider>
+      <RouterProvider router={router} />
+      <ToastContainer></ToastContainer>
+    </AuthProvider>
+  </StrictMode>
+);
