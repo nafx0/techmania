@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
   sendEmailVerification,
 } from "firebase/auth";
-import auth from "../Firebase/firebase.init";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AuthContext } from "../Provider/AuthProvider";
 
 export default function SignUp({ className, ...props }) {
+
+  const {registerManually} = useContext(AuthContext)
   const [form, setForm] = useState({
     email: "",
     pass: "",
@@ -45,7 +45,7 @@ export default function SignUp({ className, ...props }) {
     setSuccess(false);
   };
 
-  const handleRegister = async (event) => {
+  const handleRegister = (event) => {
     event.preventDefault();
 
     function validatePassword(password) {
@@ -66,25 +66,25 @@ export default function SignUp({ className, ...props }) {
       return;
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        form.email,
-        form.pass
-      );
-
-      console.log("Registered user:", userCredential.user);
-      setForm({ email: "", pass: "", confPass: "" });
-      setSuccess(true);
-
-      sendEmailVerification(auth.currentUser).then(() => {
+    // Fixed promise chain
+    registerManually(form.email, form.pass)
+      .then((result) => {
+        console.log(result.user);
+        
+        // Reset form and set success only after successful registration
+        setForm({ email: "", pass: "", confPass: "" });
+        setSuccess(true);
+        
+        // Send email verification after successful registration
+        return sendEmailVerification(result.user);
+      })
+      .then(() => {
         console.log("Email verification sent!");
+      })
+      .catch(error => {
+        setErrorMessage(error.message);
       });
-      
-    } catch (error) {
-      setErrorMessage(error.message);
-    }
-  };
+};
 
   return (
     <div className="bg-background flex min-h-svh relative flex-col items-center justify-center gap-6 pt-20 px-6 md:p-10">

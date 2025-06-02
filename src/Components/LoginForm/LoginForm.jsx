@@ -5,17 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  GoogleAuthProvider,
   sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
 } from "firebase/auth";
 import auth from "../Firebase/firebase.init";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AuthContext } from "../Provider/AuthProvider";
 
 export function LoginForm({ className, ...props }) {
+  const { googleAuth, logInManually } = useContext(AuthContext);
+
   const [form, setForm] = useState({
     email: "",
     pass: "",
@@ -40,9 +40,8 @@ export function LoginForm({ className, ...props }) {
     }
   }, [success]);
 
-  const provider = new GoogleAuthProvider();
   const handleGoogleSignIn = () => {
-    signInWithPopup(auth, provider)
+      googleAuth()
       .then((result) => {
         console.log(result.user);
         setSuccess(true);
@@ -61,7 +60,7 @@ export function LoginForm({ className, ...props }) {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    signInWithEmailAndPassword(auth, form.email, form.pass)
+    logInManually(form.email, form.pass)
       .then((userCredential) => {
         console.log("Login User: ", userCredential.user);
         setSuccess(true);
