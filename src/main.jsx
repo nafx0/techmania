@@ -6,10 +6,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./Components/Root/Root";
 import { LoginForm } from "./Components/LoginForm/LoginForm";
 import ErrorPage from "./Components/ErrorPage/ErrorPage";
-import Home from "./Home/Home";
+import Home from "./Components/Home/Home";
 import SignUp from "./Components/SignUp/SignUp";
 import { ToastContainer } from "react-toastify";
 import AuthProvider from "./Components/Provider/AuthProvider";
+import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
+import Orders from "./Components/Orders/Orders";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +21,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home></Home>,
+        element: <Home></Home>
       },
       {
         path: "/login",
@@ -29,6 +31,10 @@ const router = createBrowserRouter([
         path: "/register",
         element: <SignUp></SignUp>,
       },
+      {
+        path: "/orders",
+        element: <PrivateRoute><Orders></Orders></PrivateRoute>
+      }
     ],
   },
 ]);

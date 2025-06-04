@@ -4,12 +4,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  sendPasswordResetEmail,
-} from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import auth from "../Firebase/firebase.init";
 import { useContext, useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../Provider/AuthProvider";
 
@@ -28,6 +26,8 @@ export function LoginForm({ className, ...props }) {
 
   const emailRef = useRef();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (errorMessage) {
       toast.error(errorMessage);
@@ -41,10 +41,11 @@ export function LoginForm({ className, ...props }) {
   }, [success]);
 
   const handleGoogleSignIn = () => {
-      googleAuth()
+    googleAuth()
       .then((result) => {
         console.log(result.user);
         setSuccess(true);
+        navigate("/");
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -65,6 +66,7 @@ export function LoginForm({ className, ...props }) {
         console.log("Login User: ", userCredential.user);
         setSuccess(true);
         setForm({ ...form, email: "", pass: "" });
+        navigate("/");
       })
       .catch((error) => {
         const errorMessage = error.message;

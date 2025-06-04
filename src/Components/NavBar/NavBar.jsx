@@ -18,9 +18,9 @@ import {
   SheetDescription,
   SheetHeader,
 } from "@/components/ui/sheet";
-import { LogIn, Menu } from "lucide-react";
-import { useContext } from "react";
+import { LogIn, LogOut, Menu } from "lucide-react";
 import { AuthContext } from "../Provider/AuthProvider";
+import { useContext } from "react";
 
 export default function NavBar() {
   const mainLinks = [
@@ -29,7 +29,9 @@ export default function NavBar() {
     { title: "Dashboard", href: "/dashboard" },
   ];
 
-  const authInfo = useContext(AuthContext)
+  const privateLinks = [{ title: "Orders", href: "/orders" }];
+
+  const { user, signOutUser } = useContext(AuthContext);
 
   return (
     <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 max-w-7xl mx-auto px-5 md:px-0">
@@ -38,7 +40,7 @@ export default function NavBar() {
         <div className="flex items-center gap-2">
           <NavLink to="/" className="flex items-center space-x-2">
             <span className="font-bold text-xl">
-              {authInfo.name} <span className="text-[#8b5cf6]">Heaven</span>
+              Gadget <span className="text-[#8b5cf6]">Heaven</span>
             </span>
           </NavLink>
         </div>
@@ -65,6 +67,26 @@ export default function NavBar() {
                   </NavLink>
                 </NavigationMenuItem>
               ))}
+
+              {user &&
+                privateLinks.map((prvLink) => (
+                  <NavigationMenuItem key={prvLink.href}>
+                    <NavLink to={prvLink.href}>
+                      {({ isActive }) => (
+                        <NavigationMenuLink
+                          className={cn(
+                            navigationMenuTriggerStyle(),
+                            "font-medium transition-colors hover:text-primary",
+                            isActive ? "text-primary" : "text-gray-900"
+                          )}
+                          active={isActive}
+                        >
+                          {prvLink.title}
+                        </NavigationMenuLink>
+                      )}
+                    </NavLink>
+                  </NavigationMenuItem>
+                ))}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -73,9 +95,15 @@ export default function NavBar() {
           {/* Login Button */}
           <div className="hidden md:flex">
             <Button variant="default" size="sm" asChild>
-              <NavLink to="/login">
-                Login <LogIn></LogIn>
-              </NavLink>
+              {!user ? (
+                <NavLink to="/login">
+                  Login <LogIn></LogIn>
+                </NavLink>
+              ) : (
+                <NavigationMenuItem onClick={signOutUser}>
+                  Sign Out <LogOut></LogOut>
+                </NavigationMenuItem>
+              )}
             </Button>
           </div>
 
@@ -111,9 +139,15 @@ export default function NavBar() {
                     </NavLink>
                   ))}
                   <Button className="mt-4" asChild>
-                    <NavLink to="/login">
-                      Login <LogIn></LogIn>
-                    </NavLink>
+                    {!user ? (
+                      <NavLink to="/login">
+                        Login <LogIn></LogIn>
+                      </NavLink>
+                    ) : (
+                      <NavigationMenuItem onClick={signOutUser}>
+                        Sign Out <LogOut></LogOut>
+                      </NavigationMenuItem>
+                    )}
                   </Button>
                 </nav>
               </SheetContent>
